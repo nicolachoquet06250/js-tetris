@@ -1,15 +1,9 @@
 class Board {
-  ctx;
-  ctxNext;
-  grid;
-  piece;
-  next;
-  requestId;
-  time;
-
   constructor(ctx, ctxNext) {
     this.ctx = ctx;
     this.ctxNext = ctxNext;
+    this.grid = this.getEmptyGrid();
+    this.next = null;
     this.init();
   }
 

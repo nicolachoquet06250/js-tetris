@@ -1,13 +1,11 @@
 class Piece {
-  x;
-  y;
-  color;
-  shape;
-  ctx;
-  typeId;
-
   constructor(ctx) {
     this.ctx = ctx;
+    this.x = null;
+    this.y = null;
+    this.color = '';
+    this.shape = null;
+    this.typeId = 0;
     this.spawn();
   }
 
