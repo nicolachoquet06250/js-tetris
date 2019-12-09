@@ -7,7 +7,7 @@ let accountValues = {
   score: 0,
   level: 0,
   lines: 0
-}
+};
 
 function updateAccount(key, value) {
   let element = document.getElementById(key);
