@@ -4,7 +4,27 @@ class Board {
     this.ctxNext = ctxNext;
     this.grid = this.getEmptyGrid();
     this.next = null;
+    this.moves = {};
+    this.account = {};
     this.init();
+  }
+
+  addMove(move, callback) {
+    this.moves[move] = callback;
+    return this;
+  }
+
+  /**
+   * @param {{
+   *     score: number,
+   *      level: number,
+   *      lines: number
+   * }} account
+   * @return {Board}
+   */
+  accountIs(account) {
+    this.account = account;
+    return this;
   }
 
   init() {
@@ -40,7 +60,7 @@ class Board {
   }
 
   drop() {
-    let p = moves[KEY.DOWN](this.piece);
+    let p = this.moves[KEY.DOWN](this.piece);
     if (this.valid(p)) {
       this.piece.move(p);
     } else {
