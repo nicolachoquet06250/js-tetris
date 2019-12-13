@@ -23,13 +23,7 @@ game.addMovesInBoard();
 game.defineKeyDownEvent();
 game.initNext();
 game.initPlayButtonEvent();
-
-for(let pause_button of document.querySelectorAll('.pause-button')) {
-  pause_button.addEventListener('click', () => {
-    game.pause();
-    pause_button.innerHTML = pause_button.innerText === 'Pause' ? 'Replay' : 'Pause';
-  });
-}
+game.initPauseButtonEvent();
 
 document.querySelector('#board').style.marginBottom = `${parseInt(document.querySelector('.mobile-play-bar')
     .style.height.replace('px', '')) + 10}px`;
