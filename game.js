@@ -71,7 +71,7 @@ class Game {
         this.time.start = performance.now();
         // If we have an old game running a game then cancel the old
         if (this.requestId) {
-            cancelAnimationFrame(requestId);
+            cancelAnimationFrame(this.requestId);
         }
 
         this.animate();
@@ -101,6 +101,13 @@ class Game {
         this.ctx.font = '1px Arial';
         this.ctx.fillStyle = 'red';
         this.ctx.fillText('GAME OVER', 1.8, 4);
+        for(let play_button of document.querySelectorAll('.play-button')) {
+            this.toggleButton(play_button);
+        }
+        for(let pause_button of document.querySelectorAll('.pause-button')) {
+            pause_button.innerHTML = 'Pause';
+            this.toggleButton(pause_button);
+        }
     }
 
     pause() {
@@ -167,6 +174,47 @@ class Game {
         document.querySelector('.accelerate-shape').addEventListener('click', () => {
             this.defineAction(KEY.DOWN);
         });
+    }
+
+    showButton(btn) {
+        btn.classList.remove('d-none');
+        btn.classList.add('d-block');
+    }
+
+    hideButton(btn) {
+        btn.classList.remove('d-block');
+        btn.classList.add('d-none');
+    }
+
+    toggleButton(btn) {
+       if(btn.classList.contains('d-none')) {
+           this.showButton(btn);
+       } else {
+           this.hideButton(btn);
+       }
+    }
+
+    initPlayButtonEvent() {
+        for(let play_button of document.querySelectorAll('.play-button')) {
+            play_button.addEventListener('click', () => {
+                game.play();
+                for(let play_button of document.querySelectorAll('.play-button')) {
+                    this.hideButton(play_button);
+                }
+                for(let pause_button of document.querySelectorAll('.pause-button')) {
+                    this.showButton(pause_button);
+                }
+            });
+        }
+    }
+
+    initPauseButtonEvent() {
+        for(let pause_button of document.querySelectorAll('.pause-button')) {
+            pause_button.addEventListener('click', () => {
+                game.pause();
+                pause_button.innerHTML = pause_button.innerText === 'Pause' ? 'Replay' : 'Pause';
+            });
+        }
     }
 
     updateAccount(key, value) {
