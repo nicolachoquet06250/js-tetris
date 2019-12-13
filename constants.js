@@ -3,6 +3,7 @@
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30;
+const MOBILE_BLOCK_SIZE = 12.5;
 const LINES_PER_LEVEL = 10;
 const COLORS = [
   'none',
@@ -46,7 +47,7 @@ const POINTS = {
   TETRIS: 800,
   SOFT_DROP: 1,
   HARD_DROP: 2,
-}
+};
 Object.freeze(POINTS);
 
 const LEVEL = {

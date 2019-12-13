@@ -1,9 +1,12 @@
 class Game {
     constructor() {
-        this.canvas = document.getElementById('board');
+        this.canvas = document.querySelector('#board');
         this.ctx = this.canvas.getContext('2d');
-        this.canvasNext = document.getElementById('next');
-        this.ctxNext = this.canvasNext.getContext('2d');
+        this.canvasNext = document.querySelectorAll('.next');
+        this.ctxNext = [];
+        for(let canvasNext of this.canvasNext) {
+            this.ctxNext.push(canvasNext.getContext('2d'));
+        }
         this.time = {};
         this.boardIs(new Board(this.ctx, this.ctxNext));
         this.account = null;
@@ -47,9 +50,12 @@ class Game {
 
     initNext() {
         // Calculate size of canvas from constants.
-        this.ctxNext.canvas.width = 4 * BLOCK_SIZE;
-        this.ctxNext.canvas.height = 4 * BLOCK_SIZE;
-        this.ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
+        for(let ctxNext of this.ctxNext) {
+            let block_size = ctxNext.canvas.classList.contains('mobile') ? MOBILE_BLOCK_SIZE : BLOCK_SIZE;
+            ctxNext.canvas.width = 4 * block_size;
+            ctxNext.canvas.height = 4 * block_size;
+            ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
+        }
     }
 
     reset() {
@@ -113,31 +119,53 @@ class Game {
         this.ctx.fillText('PAUSED', 3, 4);
     }
 
-    defineKeyDownEvent() {
-        document.addEventListener('keydown', event => {
-            if (event.keyCode === KEY.P) {
-                this.pause();
-            }
-            if (event.keyCode === KEY.ESC) {
-                this.gameOver();
-            } else if (this.moves[event.keyCode]) {
+    defineAction(keyCode, event = null) {
+        if (keyCode === KEY.P) {
+            this.pause();
+        }
+        if (keyCode === KEY.ESC) {
+            this.gameOver();
+        } else if (this.moves[keyCode]) {
+            if(event !== null) {
                 event.preventDefault();
-                // Get new state
-                let p = this.moves[event.keyCode](this.board.piece);
-                if (event.keyCode === KEY.SPACE) {
-                    // Hard drop
-                    while (this.board.valid(p)) {
-                        this.account.score += POINTS.HARD_DROP;
-                        this.board.piece.move(p);
-                        p = this.moves[KEY.DOWN](this.board.piece);
-                    }
-                } else if (this.board.valid(p)) {
+            }
+            // Get new state
+            let p = this.moves[keyCode](this.board.piece);
+            if (keyCode === KEY.SPACE) {
+                // Hard drop
+                while (this.board.valid(p)) {
+                    this.account.score += POINTS.HARD_DROP;
                     this.board.piece.move(p);
-                    if (event.keyCode === KEY.DOWN) {
-                        this.account.score += POINTS.SOFT_DROP;
-                    }
+                    p = this.moves[KEY.DOWN](this.board.piece);
+                }
+            } else if (this.board.valid(p)) {
+                this.board.piece.move(p);
+                if (keyCode === KEY.DOWN) {
+                    this.account.score += POINTS.SOFT_DROP;
                 }
             }
+        }
+    }
+
+    defineKeyDownEvent() {
+        document.addEventListener('keydown', event => {
+            this.defineAction(event.keyCode, event);
+        });
+
+        document.querySelector('.turn-shape').addEventListener('click', () => {
+            this.defineAction(KEY.UP);
+        });
+
+        document.querySelector('.go-left').addEventListener('click', () => {
+            this.defineAction(KEY.LEFT);
+        });
+
+        document.querySelector('.go-right').addEventListener('click', () => {
+            this.defineAction(KEY.RIGHT);
+        });
+
+        document.querySelector('.accelerate-shape').addEventListener('click', () => {
+            this.defineAction(KEY.DOWN);
         });
     }
 

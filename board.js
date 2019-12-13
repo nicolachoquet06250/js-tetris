@@ -6,6 +6,7 @@ class Board {
     this.next = null;
     this.moves = {};
     this.account = {};
+    this.time = {};
     this.init();
   }
 
@@ -27,6 +28,11 @@ class Board {
     return this;
   }
 
+  timeIs(time) {
+    this.time = time;
+    return this;
+  }
+
   init() {
     // Calculate size of canvas from constants.
     this.ctx.canvas.width = COLS * BLOCK_SIZE;
@@ -44,14 +50,23 @@ class Board {
   }
 
   getNewPiece() {
-    this.next = new Piece(this.ctxNext);
-    this.ctxNext.clearRect(
-      0,
-      0, 
-      this.ctxNext.canvas.width, 
-      this.ctxNext.canvas.height
-    );
-    this.next.draw();
+    this.next = [];
+    for(let ctxNext of this.ctxNext) {
+      this.next.push(new Piece(ctxNext));
+    }
+
+    for(let ctxNext of this.ctxNext) {
+      ctxNext.clearRect(
+          0,
+          0,
+          ctxNext.canvas.width,
+          ctxNext.canvas.height
+      );
+    }
+
+    for(let next of this.next) {
+      next.draw();
+    }
   }
 
   draw() {
@@ -70,7 +85,7 @@ class Board {
         // Game over
         return false;
       }
-      this.piece = this.next;
+      this.piece = this.next[0];
       this.piece.ctx = this.ctx;
       this.piece.setStartingPosition();
       this.getNewPiece();
@@ -98,19 +113,19 @@ class Board {
     if (lines > 0) {
       // Calculate points from cleared lines and level.
 
-      account.score += this.getLinesClearedPoints(lines);
-      account.lines += lines;
+      this.account.score += this.getLinesClearedPoints(lines);
+      this.account.lines += lines;
 
       // If we have reached the lines for next level
-      if (account.lines >= LINES_PER_LEVEL) {
+      if (this.account.lines >= LINES_PER_LEVEL) {
         // Goto next level
-        account.level++;  
+        this.account.level++;
         
         // Remove lines so we start working for the next level
-        account.lines -= LINES_PER_LEVEL;
+        this.account.lines -= LINES_PER_LEVEL;
 
         // Increase speed of game
-        time.level = LEVEL[account.level];
+        this.time.level = LEVEL[this.account.level];
       }
     }
   }
@@ -193,6 +208,6 @@ class Board {
         ? POINTS.TETRIS
         : 0;
 
-    return (account.level + 1) * lineClearPoints;
+    return (this.account.level + 1) * lineClearPoints;
   }
 }
