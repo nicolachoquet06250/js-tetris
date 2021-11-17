@@ -197,7 +197,7 @@ class Game {
     initPlayButtonEvent() {
         for(let play_button of document.querySelectorAll('.play-button')) {
             play_button.addEventListener('click', () => {
-                game.play();
+                this.play();
                 for(let play_button of document.querySelectorAll('.play-button')) {
                     this.hideButton(play_button);
                 }
@@ -211,7 +211,7 @@ class Game {
     initPauseButtonEvent() {
         for(let pause_button of document.querySelectorAll('.pause-button')) {
             pause_button.addEventListener('click', () => {
-                game.pause();
+                this.pause();
                 pause_button.innerHTML = pause_button.innerText === 'Pause' ? 'Replay' : 'Pause';
             });
         }
